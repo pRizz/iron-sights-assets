@@ -1,0 +1,7 @@
+# Local builds and scratch files
+/build/
+*.pyc
+__pycache__/
+.DS_Store
+# Development-only placeholder fonts (never committed; see README)
+/placeholders/
