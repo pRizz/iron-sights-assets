@@ -72,4 +72,12 @@ not others, which is why everything here is drawn from scratch.
 
 ## License
 
-[MIT](LICENSE), covering sources, tools and built outputs alike.
+[MIT](LICENSE). It covers everything in this repository: asset sources (font
+outlines, drawings, parameter files), the generators and tools that build
+them, and the outputs they produce (fonts, atlases, metrics, images).
+
+This repository contains no material from GoldenEye 007 or any other game, and
+no data read from a game ROM. Game names and trademarks in the documentation
+belong to their owners and are used only to describe compatibility. This
+project is not affiliated with or endorsed by Rare, Nintendo, MGM, EON or any
+other rights holder.
