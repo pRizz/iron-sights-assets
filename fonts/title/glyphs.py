@@ -32,10 +32,20 @@ def stem_width(scale=1.0):
 
 # --- Capitals (lowercase reuses them as small capitals) ---------------------
 
+def _x_at(p0, p1, y):
+    """x where the line through p0 and p1 crosses height y."""
+    (x0, y0), (x1, y1) = p0, p1
+    return x0 + (x1 - x0) * (y - y0) / (y1 - y0)
+
+
 @glyph('A', 0.92)
 def _a(p):
-    p.path((p.L, p.B), (p.L, p.T), (p.R, p.T), (p.R, p.B))
-    p.line((p.L, p.M), (p.R, p.M))
+    # Diagonal sides to a narrow flat top, cut flat at the baseline.
+    left = ((p.L - 0.1 * p.w, -p.w), (p.C - 0.16 * p.W, p.T))
+    right = ((p.R + 0.1 * p.w, -p.w), (p.C + 0.16 * p.W, p.T))
+    p.line(left[0], left[1], right[1], right[0], ends='butt')
+    y = 0.36 * p.H
+    p.line((_x_at(*left, y), y), (_x_at(*right, y), y), ends='butt')
 
 
 @glyph('B', 0.90)
@@ -101,10 +111,9 @@ def _l(p):
     p.line((p.L, p.T), (p.L, p.B), (p.R, p.B))
 
 
-@glyph('M', 1.12)
+@glyph('M', 1.08)
 def _m(p):
-    p.path((p.L, p.B), (p.L, p.T), (p.R, p.T), (p.R, p.B))
-    p.line((p.C, p.T), (p.C, 0.30 * p.H))
+    p.line((p.L, p.B), (p.L, p.T), (p.C, p.B), (p.R, p.T), (p.R, p.B))
 
 
 @glyph('N', 0.95)
@@ -155,10 +164,9 @@ def _v(p):
     p.line((p.L - 0.30 * p.w, p.H + p.w), (p.C, 0.15 * p.w), (p.R + 0.30 * p.w, p.H + p.w), ends='butt')
 
 
-@glyph('W', 1.20)
+@glyph('W', 1.16)
 def _w(p):
-    p.path((p.L, p.T), (p.L, p.B), (p.R, p.B), (p.R, p.T))
-    p.line((p.C, p.B), (p.C, 0.70 * p.H))
+    p.line((p.L, p.T), (p.L, p.B), (p.C, p.T), (p.R, p.B), (p.R, p.T))
 
 
 @glyph('X', 0.92)
@@ -169,7 +177,7 @@ def _x(p):
 
 @glyph('Y', 0.92)
 def _y(p):
-    p.path((p.L, p.T), (p.L, p.M), (p.R, p.M), (p.R, p.T))
+    p.line((p.L - 0.3 * p.w, p.H + p.w), (p.C, p.M), (p.R + 0.3 * p.w, p.H + p.w), ends='butt')
     p.line((p.C, p.M), (p.C, p.B))
 
 
@@ -225,7 +233,7 @@ def _6(p):
 
 @glyph('7', FIGURE)
 def _7(p):
-    p.path((p.L, p.T), (p.R, p.T), (p.R, p.B), maybe_radii={1: p.bowl * 0.6})
+    p.line((p.L, p.T), (p.R, p.T), (p.C - 0.12 * p.W, -p.w))
 
 
 @glyph('8', FIGURE)
@@ -286,11 +294,11 @@ def _percent(p):
 
 @glyph('&', 0.95)
 def _amp(p):
-    xm = p.C + 0.08 * p.W
-    p.path((xm, p.M), (p.L + 0.10 * p.W, p.M), (p.L + 0.10 * p.W, p.T), (xm, p.T), maybe_r=0, maybe_radii={1: 0, 2: p.bowl * 0.6, 3: p.bowl * 0.6},
-           closed=True)
-    p.path((xm, p.M), (p.L, p.M), (p.L, p.B), (p.R, p.B), (p.R, 0.48 * p.H), maybe_r=0, maybe_radii={2: p.bowl})
-    p.line((p.R - 0.20 * p.W, 0.48 * p.H), (p.R, 0.48 * p.H))
+    # A small loop over a larger bowl, with a diagonal tail out to the right.
+    xt = p.C + 0.10 * p.W
+    p.path((p.L + 0.12 * p.W, p.M), (p.L + 0.12 * p.W, p.T), (xt, p.T), (xt, p.M), maybe_r=p.bowl * 0.6, closed=True)
+    p.path((p.R - 0.20 * p.W, p.M), (p.L, p.M), (p.L, p.B), (p.R - 0.20 * p.W, p.B), maybe_r=p.bowl)
+    p.line((xt - 0.2 * p.w, p.M + 0.5 * p.w), (p.R + 0.3 * p.w, -p.w), ends='butt')
 
 
 @glyph('(', 0.42, maybe_band=TALL)
@@ -395,10 +403,10 @@ def _question(p):
 
 @glyph('@', 1.0)
 def _at(p):
-    y0, y1 = 0.30 * p.H, 0.66 * p.H
-    x0 = p.C - 0.06 * p.W
-    p.path((p.R, p.B), (p.L, p.B), (p.L, p.T), (p.R, p.T), (p.R, y0), (x0, y0), (x0, y1), (p.R, y1),
-           maybe_radii={4: 0, 5: p.bowl * 0.5, 6: p.bowl * 0.5})
+    # An inner box joined to a frame that closes along the bottom.
+    y0, y1, x0 = 0.30 * p.H, 0.68 * p.H, p.C - 0.10 * p.W
+    p.path((x0, y1), (p.R, y1), (p.R, y0), (x0, y0), maybe_r=p.bowl * 0.5, closed=True)
+    p.path((p.R, y0), (p.R, p.T), (p.L, p.T), (p.L, p.B), (p.R, p.B), maybe_radii={1: p.bowl, 2: p.bowl, 3: p.bowl})
 
 
 @glyph('^', 0.70)
@@ -424,8 +432,9 @@ def _bar(p):
 
 @glyph('~', 0.82)
 def _tilde(p):
-    lo, hi = p.M - 0.10 * p.H, p.M + 0.10 * p.H
-    p.path((p.L, lo), (p.L, hi), (p.C, hi), (p.C, lo), (p.R, lo), (p.R, hi), maybe_r=p.bowl * 0.5)
+    lo, hi = p.M - 0.09 * p.H, p.M + 0.09 * p.H
+    third = (p.R - p.L) / 3
+    p.line((p.L, lo), (p.L + third, hi), (p.L + 2 * third, lo), (p.R, hi))
 
 
 PRINTABLE = [chr(c) for c in range(0x21, 0x7F)]
