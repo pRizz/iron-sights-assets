@@ -19,13 +19,16 @@ description:
 - **Made from:** where it started, for example "blank canvas", "parameters in
   `fonts/<name>/source/params.json`", or "our own earlier version". References
   you looked at for general style (for example "a 1990s bold grotesque") are
-  fine to mention; anything you traced or measured is not allowed (see below).
+  fine to mention. If a change was informed by comparing with the game's own
+  art (see the README), say so; anything traced or copied is not allowed (see
+  below).
 - **Tools:** the editors and generators used, with versions where it matters.
 
 ## Not allowed
 
-- Tracing, sampling, scanning or measuring any game's art, fonts or textures,
-  or any texture or font pack, whatever its license.
+- Tracing any game's art, fonts or textures, or any texture or font pack,
+  whatever its license, or copying their outlines, coordinates, pixels or
+  metrics into our sources. Comparing locally to judge the style is allowed.
 - Committing anything read from a game ROM, including glyph widths, kerning,
   texture layouts and checksums.
 - Committing assets derived from other open works (OFL, Apache-2.0, CC-BY and

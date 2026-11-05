@@ -103,9 +103,18 @@ Iron Sights tracks this work in its
 
 ## Rules for every asset
 
-- **Drawn from scratch.** Never trace, sample, scan or measure the game's art
-  or fonts, or any texture pack or font pack, including packs marked CC0. The
-  aim is to match a general style, not to copy any existing design.
+- **Drawn from scratch.** Every outline and drawing is made in our own
+  sources. Never trace the game's art or fonts, or any texture or font pack
+  (including packs marked CC0), and never copy their outlines, coordinates,
+  pixels or metrics into this repository. The aim is to capture a general
+  style, not to reproduce any existing design.
+- **Comparing is allowed, locally.** The owner may compare our assets with the
+  game's own, from their own copy, to judge how close the overall style is:
+  for example Iron Sights' `scripts/port/compare_open_font.py`, which draws the
+  game's glyphs beside ours with an overlay and a difference. Its output is
+  game-derived and never enters this repository. Changes that a comparison
+  informs are redrawn by hand in our sources, and their provenance note says a
+  comparison informed them. Title font v0.1.0 was drawn before any comparison.
 - **No ROM data.** Nothing read from a game ROM goes into this repository, not
   even glyph widths or texture checksums. Tools that need the ROM run on the
   user's machine and never commit what they read.

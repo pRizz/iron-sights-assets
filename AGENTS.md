@@ -5,11 +5,15 @@ These instructions apply throughout this repository.
 ## Repo-Local Guidance
 
 - Read [README.md](README.md) and [CONTRIBUTING.md](CONTRIBUTING.md) before
-  changing assets. Their rules are binding: draw everything from scratch, never
-  trace, sample or measure a game's art, fonts or any texture or font pack, keep
-  ROM-derived data (including glyph metrics and texture checksums) out of the
+  changing assets. Their rules are binding: draw everything in our own
+  sources, never trace a game's art, fonts or any texture or font pack or copy
+  their outlines, coordinates, pixels or metrics, keep ROM-derived data
+  (including glyph metrics, texture checksums and comparison images) out of the
   repository, do not name assets after the game or its fonts, and keep
-  everything MIT. Derivatives of other open works stay out of Git.
+  everything MIT. Derivatives of other open works stay out of Git. The owner
+  may compare with the game's own glyphs locally (Iron Sights'
+  `scripts/port/compare_open_font.py`); note in the provenance when a
+  comparison informed a change.
 - Sign off every commit (`git commit -s`, Developer Certificate of Origin), and
   give each asset change a provenance note: author, what it was made from, tools.
 - Python 3.12 builds everything. Install the pinned tools with
