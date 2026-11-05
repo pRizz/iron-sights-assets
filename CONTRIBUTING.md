@@ -36,4 +36,9 @@ description:
 
 Outputs must rebuild byte-for-byte from their sources with the tools in
 `tools/`. Run the checks in `tests/` before opening a pull request; they never
-need a ROM. (The tools and tests arrive with the first font.)
+need a ROM:
+
+```bash
+python -m unittest discover -s tests -t .
+python -m tools.check_dist
+```

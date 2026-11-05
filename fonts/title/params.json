@@ -1,0 +1,21 @@
+{
+  "family": "Iron Sights Title",
+  "postscriptName": "IronSightsTitle-Regular",
+  "version": "0.1.0",
+  "unitsPerEm": 1000,
+  "capHeight": 700,
+  "smallcapHeight": 530,
+  "ascender": 860,
+  "descender": -200,
+  "weight": 104,
+  "smallcapWeight": 94,
+  "bowl": 0.95,
+  "softenConvex": 9,
+  "sidebearing": 58,
+  "space": 260,
+  "atlas": {
+    "pxPerEm": 48,
+    "pxRange": 6,
+    "columns": 16
+  }
+}

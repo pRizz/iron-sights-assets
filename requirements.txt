@@ -1,0 +1,5 @@
+# Build tools (not shipped). Pinned so outputs rebuild identically.
+fonttools==4.68.0
+pyclipper==1.4.0
+numpy==1.26.4
+pillow==12.0.0

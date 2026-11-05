@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Install build tools
+        run: python -m pip install -r requirements.txt
+      - name: Tests (no ROM needed)
+        run: python -m unittest discover -s tests -t . -v
+      - name: dist/ matches a fresh build
+        run: python -m tools.check_dist
+
+  release:
+    needs: check
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Package dist/ with checksums
+        run: |
+          set -euo pipefail
+          mkdir -p release stage
+          for font in dist/*/; do
+            name=$(basename "$font")
+            mkdir -p "stage/$name"
+            cp "$font"* "stage/$name/"
+            cp LICENSE "stage/$name/LICENSE"
+            tar --sort=name --mtime='2026-01-01 00:00:00Z' --owner=0 --group=0 --numeric-owner \
+              -czf "release/${name}-${GITHUB_REF_NAME}.tar.gz" -C stage "$name"
+          done
+          cp LICENSE release/LICENSE
+          (cd release && sha256sum * > SHA256SUMS)
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" release/* --title "$GITHUB_REF_NAME" \
+            --notes "Built from ${GITHUB_SHA}. Checksums in SHA256SUMS. MIT licensed; see LICENSE."
