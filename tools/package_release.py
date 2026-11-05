@@ -34,7 +34,7 @@ def pack_font(font_dir, license_bytes, archive):
     """Write font_dir and LICENSE into a reproducible .tar.gz at archive."""
     raw = io.BytesIO()
     with tarfile.open(fileobj=raw, mode='w', format=tarfile.PAX_FORMAT) as tar:
-        for path in sorted(font_dir.iterdir()):
+        for path in sorted(font_dir.iterdir(), key=lambda path: path.name):  # case-sensitive on every OS
             _add(tar, f'{font_dir.name}/{path.name}', path.read_bytes())
         _add(tar, f'{font_dir.name}/LICENSE', license_bytes)
     with archive.open('wb') as out, gzip.GzipFile(fileobj=out, mode='wb', mtime=0, filename='') as gz:
