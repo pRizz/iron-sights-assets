@@ -38,11 +38,14 @@ def _x_at(p0, p1, y):
     return x0 + (x1 - x0) * (y - y0) / (y1 - y0)
 
 
+HOOK = 0.17  # length of a terminal hook, as a fraction of H
+
+
 @glyph('A', 0.92)
 def _a(p):
-    # Diagonal sides to a narrow flat top, cut flat at the baseline.
-    left = ((p.L - 0.1 * p.w, -p.w), (p.C - 0.16 * p.W, p.T))
-    right = ((p.R + 0.1 * p.w, -p.w), (p.C + 0.16 * p.W, p.T))
+    # Diagonal sides almost meeting at a small flat top, cut flat at the baseline.
+    left = ((p.L - 0.1 * p.w, -p.w), (p.C - 0.06 * p.W, p.T))
+    right = ((p.R + 0.1 * p.w, -p.w), (p.C + 0.06 * p.W, p.T))
     p.line(left[0], left[1], right[1], right[0], ends='butt')
     y = 0.36 * p.H
     p.line((_x_at(*left, y), y), (_x_at(*right, y), y), ends='butt')
@@ -57,7 +60,9 @@ def _b(p):
 
 @glyph('C', 0.88)
 def _c(p):
-    p.path((p.R, p.T), (p.L, p.T), (p.L, p.B), (p.R, p.B))
+    hook = HOOK * p.H
+    p.path((p.R, p.T - hook), (p.R, p.T), (p.L, p.T), (p.L, p.B), (p.R, p.B), (p.R, p.B + hook),
+           maybe_radii={1: p.bowl * 0.6, 4: p.bowl * 0.6})
 
 
 @glyph('D', 0.92)
@@ -113,7 +118,8 @@ def _l(p):
 
 @glyph('M', 1.08)
 def _m(p):
-    p.line((p.L, p.B), (p.L, p.T), (p.C, p.B), (p.R, p.T), (p.R, p.B))
+    # The V stops short of the baseline.
+    p.line((p.L, p.B), (p.L, p.T), (p.C, 0.30 * p.H), (p.R, p.T), (p.R, p.B))
 
 
 @glyph('N', 0.95)
@@ -131,10 +137,11 @@ def _p(p):
     p.path((p.L, p.B), (p.L, p.T), (p.R, p.T), (p.R, p.M), (p.L, p.M), maybe_r=0, maybe_radii={2: p.bowl, 3: p.bowl})
 
 
-@glyph('Q', 0.95)
+@glyph('Q', 0.95, maybe_band=(-0.14, 1.0))
 def _q(p):
     p.path((p.L, p.B), (p.L, p.T), (p.R, p.T), (p.R, p.B), closed=True)
-    p.line((p.C + 0.08 * p.W, p.B + 0.26 * p.H), (p.W + p.w, -0.30 * p.H), ends='butt')
+    # The tail runs from inside the bowl out through its bottom edge.
+    p.line((p.C, 0.34 * p.H), (p.R - 0.04 * p.W, -0.30 * p.H), ends='butt')
 
 
 @glyph('R', 0.90)
@@ -145,7 +152,9 @@ def _r(p):
 
 @glyph('S', 0.88)
 def _s(p):
-    p.path((p.R, p.T), (p.L, p.T), (p.L, p.M), (p.R, p.M), (p.R, p.B), (p.L, p.B))
+    hook = HOOK * p.H
+    p.path((p.R, p.T - hook), (p.R, p.T), (p.L, p.T), (p.L, p.M), (p.R, p.M), (p.R, p.B), (p.L, p.B),
+           (p.L, p.B + hook), maybe_radii={1: p.bowl * 0.6, 6: p.bowl * 0.6})
 
 
 @glyph('T', 0.86)
@@ -164,9 +173,12 @@ def _v(p):
     p.line((p.L - 0.30 * p.w, p.H + p.w), (p.C, 0.15 * p.w), (p.R + 0.30 * p.w, p.H + p.w), ends='butt')
 
 
-@glyph('W', 1.16)
+@glyph('W', 1.20)
 def _w(p):
-    p.line((p.L, p.T), (p.L, p.B), (p.C, p.T), (p.R, p.B), (p.R, p.T))
+    # Diagonal legs down to two points, rising to a centre apex at the top.
+    low = 0.15 * p.w
+    p.line((p.L - 0.3 * p.w, p.H + p.w), (0.27 * p.W, low), (p.C, p.T), (0.73 * p.W, low),
+           (p.R + 0.3 * p.w, p.H + p.w), ends='butt')
 
 
 @glyph('X', 0.92)
@@ -204,25 +216,31 @@ def _1(p):
 
 @glyph('2', FIGURE)
 def _2(p):
-    p.path((p.L, p.T), (p.R, p.T), (p.R, p.M), (p.L, p.M), (p.L, p.B), (p.R, p.B))
+    hook = HOOK * p.H
+    p.path((p.L, p.T - hook), (p.L, p.T), (p.R, p.T), (p.R, p.M), (p.L, p.M), (p.L, p.B), (p.R, p.B),
+           (p.R, p.B + hook), maybe_radii={1: p.bowl * 0.6, 6: p.bowl * 0.6})
 
 
 @glyph('3', FIGURE)
 def _3(p):
-    p.path((p.L, p.T), (p.R, p.T), (p.R, p.B), (p.L, p.B))
+    hook = HOOK * p.H
+    p.path((p.L, p.T - hook), (p.L, p.T), (p.R, p.T), (p.R, p.B), (p.L, p.B), (p.L, p.B + hook),
+           maybe_radii={1: p.bowl * 0.6, 4: p.bowl * 0.6})
     p.line((p.L + 0.22 * p.W, p.M), (p.R, p.M))
 
 
 @glyph('4', FIGURE)
 def _4(p):
-    y = 0.38 * p.H
-    p.line((p.L, p.T), (p.L, y), (p.R, y))
-    p.line((p.R - 0.16 * p.W, p.T), (p.R - 0.16 * p.W, p.B))
+    # A diagonal from the top of the stem down to the bar.
+    y = 0.36 * p.H
+    x = p.R - 0.16 * p.W
+    p.line((x, p.B), (x, p.T), (p.L - 0.2 * p.w, y), (p.R, y))
 
 
 @glyph('5', FIGURE)
 def _5(p):
-    p.path((p.R, p.T), (p.L, p.T), (p.L, p.M), (p.R, p.M), (p.R, p.B), (p.L, p.B), maybe_r=0,
+    y = 0.58 * p.H  # the bar sits above the middle
+    p.path((p.R, p.T), (p.L, p.T), (p.L, y), (p.R, y), (p.R, p.B), (p.L, p.B), maybe_r=0,
            maybe_radii={3: p.bowl, 4: p.bowl})
 
 
@@ -233,7 +251,7 @@ def _6(p):
 
 @glyph('7', FIGURE)
 def _7(p):
-    p.line((p.L, p.T), (p.R, p.T), (p.C - 0.12 * p.W, -p.w))
+    p.line((p.L, p.T - HOOK * p.H), (p.L, p.T), (p.R, p.T), (p.C - 0.12 * p.W, -p.w))
 
 
 @glyph('8', FIGURE)
@@ -244,7 +262,8 @@ def _8(p):
 
 @glyph('9', FIGURE)
 def _9(p):
-    p.path((p.R, p.M), (p.L, p.M), (p.L, p.T), (p.R, p.T), (p.R, p.B), (p.L, p.B), maybe_radii={0: 0})
+    tail = p.L + 0.35 * (p.R - p.L)  # a short tail along the bottom
+    p.path((p.R, p.M), (p.L, p.M), (p.L, p.T), (p.R, p.T), (p.R, p.B), (tail, p.B), maybe_radii={0: 0})
 
 
 # --- Punctuation and symbols --------------------------------------------------
@@ -272,33 +291,38 @@ def _apos(p):
 
 @glyph('#', 0.92)
 def _hash(p):
-    for x in (0.32 * p.W, 0.68 * p.W):
-        p.line((x, p.B), (x, p.T))
+    lean = 0.09 * p.W
+    for x in (0.34 * p.W, 0.66 * p.W):
+        p.line((x - lean, -p.w), (x + lean, p.H + p.w), ends='butt')
     for y in (0.34 * p.H, 0.66 * p.H):
         p.line((p.L, y), (p.R, y))
 
 
 @glyph('$', 0.88, maybe_band=(-0.12, 1.12))
 def _dollar(p):
-    p.path((p.R, p.T), (p.L, p.T), (p.L, p.M), (p.R, p.M), (p.R, p.B), (p.L, p.B))
+    # The S sits closer to its middle bar than a letter S does.
+    top, bottom = 0.86 * p.H - p.w / 2, 0.14 * p.H + p.w / 2
+    p.path((p.R, top), (p.L, top), (p.L, p.M), (p.R, p.M), (p.R, bottom), (p.L, bottom))
     p.line((p.C, -0.12 * p.H), (p.C, 1.12 * p.H), ends='butt')
 
 
 @glyph('%', 0.95)
 def _percent(p):
     s = 0.30 * p.W
-    p.path((p.L, p.T - s), (p.L, p.T), (p.L + s, p.T), (p.L + s, p.T - s), maybe_r=0, closed=True)
-    p.path((p.R - s, p.B), (p.R - s, p.B + s), (p.R, p.B + s), (p.R, p.B), maybe_r=0, closed=True)
+    r = p.bowl * 0.5
+    p.path((p.L, p.T - s), (p.L, p.T), (p.L + s, p.T), (p.L + s, p.T - s), maybe_r=r, closed=True)
+    p.path((p.R - s, p.B), (p.R - s, p.B + s), (p.R, p.B + s), (p.R, p.B), maybe_r=r, closed=True)
     p.line((p.R + 0.2 * p.w, p.H + p.w), (p.L - 0.2 * p.w, -p.w), ends='butt')
 
 
 @glyph('&', 0.95)
 def _amp(p):
-    # A small loop over a larger bowl, with a diagonal tail out to the right.
+    # A small loop over a larger bowl whose bottom curves up and out through
+    # the glyph to the right.
     xt = p.C + 0.10 * p.W
     p.path((p.L + 0.12 * p.W, p.M), (p.L + 0.12 * p.W, p.T), (xt, p.T), (xt, p.M), maybe_r=p.bowl * 0.6, closed=True)
-    p.path((p.R - 0.20 * p.W, p.M), (p.L, p.M), (p.L, p.B), (p.R - 0.20 * p.W, p.B), maybe_r=p.bowl)
-    p.line((xt - 0.2 * p.w, p.M + 0.5 * p.w), (p.R + 0.3 * p.w, -p.w), ends='butt')
+    p.path((p.L + 0.12 * p.W, p.M), (p.L, p.M), (p.L, p.B), (p.C - 0.05 * p.W, p.B), (p.R + 0.3 * p.w, 0.66 * p.H),
+           maybe_radii={1: p.bowl * 0.6, 2: p.bowl, 3: p.bowl * 1.6})
 
 
 @glyph('(', 0.42, maybe_band=TALL)
@@ -397,7 +421,8 @@ def _equals(p):
 @glyph('?', 0.82)
 def _question(p):
     y = 0.56 * p.H
-    p.path((p.L, p.T), (p.R, p.T), (p.R, y), (p.C, y), (p.C, 0.32 * p.H), maybe_radii={3: 0})
+    p.path((p.L, p.T - HOOK * p.H), (p.L, p.T), (p.R, p.T), (p.R, y), (p.C, y), (p.C, 0.32 * p.H),
+           maybe_radii={1: p.bowl * 0.6, 4: 0})
     p.dot(p.C, p.w / 2)
 
 
