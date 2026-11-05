@@ -5,3 +5,4 @@ __pycache__/
 .DS_Store
 # Development-only placeholder fonts (never committed; see README)
 /placeholders/
+/release/

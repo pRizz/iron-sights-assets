@@ -51,11 +51,11 @@ def load_definitions(name):
 def draw_glyph(defs, params, ch):
     """(contours, advance) for one character, in font units."""
     small = ch in defs.LOWERCASE
-    width_spec, band, mirror, draw = defs.GLYPHS[ch.upper() if small else ch]
+    width_spec, maybe_band, mirror, draw = defs.GLYPHS[ch.upper() if small else ch]
     height = params['smallcapHeight'] if small else params['capHeight']
     weight = params['smallcapWeight'] if small else params['weight']
     width = width_spec(height, weight) if callable(width_spec) else width_spec * height
-    lo, hi = (band[0] * height, band[1] * height) if band else (0, height)
+    lo, hi = (maybe_band[0] * height, maybe_band[1] * height) if maybe_band else (0, height)
     pen = Pen(height, width, weight, params['bowl'] * weight, (lo, hi), mirror)
     draw(pen)
     polygons = pen.outline(convex=params['softenConvex'])

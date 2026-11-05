@@ -12,7 +12,7 @@ from tools import geometry
 
 
 class Pen:
-    def __init__(self, height, width, weight, bowl, band=None, mirror=False):
+    def __init__(self, height, width, weight, bowl, maybe_band=None, mirror=False):
         self.mirror = mirror  # draw x as W - x: one definition makes ( and )
         self.H = height
         self.W = width
@@ -24,23 +24,24 @@ class Pen:
         self.T = height - weight / 2
         self.C = width / 2
         self.M = height / 2
-        self.band = band if band is not None else (0, height)
+        self.band = maybe_band if maybe_band is not None else (0, height)
         self.polygons = []
 
-    def path(self, *points, r=None, radii=None, closed=False, ends='square'):
-        """A stroked path; corners round by r (default: the bowl radius) or by
-        radii {corner index: radius}. r=0 keeps every corner square."""
-        radius = self.bowl if r is None else r
-        line = geometry.rounded_path([self._x(p) for p in points], radius, radii, closed)
+    def path(self, *points, maybe_r=None, maybe_radii=None, closed=False, ends='square'):
+        """A stroked path; corners round by maybe_r (default: the bowl radius)
+        or by maybe_radii {corner index: radius}. maybe_r=0 keeps every corner
+        square."""
+        radius = self.bowl if maybe_r is None else maybe_r
+        line = geometry.rounded_path([self._x(p) for p in points], radius, maybe_radii, closed)
         self.polygons += geometry.stroke(line, self.w, closed, ends)
 
     def line(self, *points, ends='square'):
         """A stroked path with square (mitered) corners."""
-        self.path(*points, r=0, ends=ends)
+        self.path(*points, maybe_r=0, ends=ends)
 
-    def dot(self, x, y, size=None):
+    def dot(self, x, y, maybe_size=None):
         """A square dot centered on (x, y), one weight across by default."""
-        s = (size or self.w) / 2
+        s = (maybe_size or self.w) / 2
         x = self._x((x, y))[0]
         self.polygons.append(geometry.box(x - s, y - s, x + s, y + s))
 

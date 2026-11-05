@@ -21,18 +21,18 @@ def _from_clipper(path):
     return [(round(x / SCALE), round(y / SCALE)) for x, y in path]
 
 
-def rounded_path(points, radius=0.0, radii=None, closed=False):
+def rounded_path(points, radius=0.0, maybe_radii=None, closed=False):
     """A polyline with each corner replaced by a circular arc.
 
-    radius applies to every corner; radii maps a corner's index in points to
-    its own radius. An arc never takes more than half of either neighbouring
+    radius applies to every corner; maybe_radii maps a corner's index in
+    points to its own radius. An arc never takes more than half of either neighbouring
     segment.
     """
     count = len(points)
     out = []
     for i, (x, y) in enumerate(points):
         is_end = not closed and (i == 0 or i == count - 1)
-        r = 0.0 if is_end else (radii or {}).get(i, radius)
+        r = 0.0 if is_end else (maybe_radii or {}).get(i, radius)
         if r <= 0:
             out.append((x, y))
             continue

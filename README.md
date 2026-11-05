@@ -1,5 +1,16 @@
 # Iron Sights assets
 
+<!-- bright-builds-rules-readme-badges:begin -->
+
+<!-- Managed upstream by bright-builds-rules. If this badge block needs a fix, open an upstream PR or issue instead of editing the downstream managed block. Keep repo-local README content outside this managed badge block. -->
+
+[![GitHub Stars](https://img.shields.io/github/stars/pRizz/iron-sights-assets)](https://github.com/pRizz/iron-sights-assets)
+[![License](https://img.shields.io/github/license/pRizz/iron-sights-assets?style=flat-square)](./LICENSE)
+[![Bright Builds: Rules](https://raw.githubusercontent.com/bright-builds-llc/bright-builds-rules/main/public/badges/bright-builds-rules-flat.svg)](https://github.com/bright-builds-llc/bright-builds-rules)
+[![OpenLinks profile](https://img.shields.io/badge/OpenLinks-profile-0F172A)](https://openlinks.us/)
+
+<!-- bright-builds-rules-readme-badges:end -->
+
 Original, MIT-licensed fonts and game assets, drawn from scratch for
 [Iron Sights](https://github.com/pRizz/Iron-Sights), a GoldenEye 007 PC and
 browser port, and free for any other project to use.

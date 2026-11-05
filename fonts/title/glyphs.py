@@ -8,22 +8,22 @@ Widths are given as a fraction of H, or as a function of (H, w).
 Drawn from scratch for this project; see the repository's provenance rules.
 """
 
-GLYPHS = {}  # char -> (width, band, mirror, draw)
+GLYPHS = {}  # char -> (width, maybe_band, mirror, draw)
 
 
-def glyph(chars, width, band=None):
-    """Register draw for each char; band (lo, hi) as fractions of H overrides
-    the default 0..H clip. mirrored() reuses a drawing flipped."""
+def glyph(chars, width, maybe_band=None):
+    """Register draw for each char; maybe_band (lo, hi) as fractions of H
+    overrides the default 0..H clip. mirrored() reuses a drawing flipped."""
     def register(draw):
         for ch in chars:
-            GLYPHS[ch] = (width, band, False, draw)
+            GLYPHS[ch] = (width, maybe_band, False, draw)
         return draw
     return register
 
 
 def mirrored(ch, source):
-    width, band, _, draw = GLYPHS[source]
-    GLYPHS[ch] = (width, band, True, draw)
+    width, maybe_band, _, draw = GLYPHS[source]
+    GLYPHS[ch] = (width, maybe_band, True, draw)
 
 
 def stem_width(scale=1.0):
@@ -41,8 +41,8 @@ def _a(p):
 @glyph('B', 0.90)
 def _b(p):
     xt = p.R - 0.12 * p.W
-    p.path((p.L, p.B), (p.L, p.T), (xt, p.T), (xt, p.M), (p.L, p.M), r=0, radii={2: p.bowl * 0.8, 3: p.bowl * 0.8})
-    p.path((p.L, p.M), (p.R, p.M), (p.R, p.B), (p.L, p.B), r=0, radii={1: p.bowl * 0.8, 2: p.bowl})
+    p.path((p.L, p.B), (p.L, p.T), (xt, p.T), (xt, p.M), (p.L, p.M), maybe_r=0, maybe_radii={2: p.bowl * 0.8, 3: p.bowl * 0.8})
+    p.path((p.L, p.M), (p.R, p.M), (p.R, p.B), (p.L, p.B), maybe_r=0, maybe_radii={1: p.bowl * 0.8, 2: p.bowl})
 
 
 @glyph('C', 0.88)
@@ -52,7 +52,7 @@ def _c(p):
 
 @glyph('D', 0.92)
 def _d(p):
-    p.path((p.L, p.B), (p.L, p.T), (p.R, p.T), (p.R, p.B), r=0, radii={2: p.bowl, 3: p.bowl}, closed=True)
+    p.path((p.L, p.B), (p.L, p.T), (p.R, p.T), (p.R, p.B), maybe_r=0, maybe_radii={2: p.bowl, 3: p.bowl}, closed=True)
 
 
 @glyph('E', 0.82)
@@ -69,7 +69,7 @@ def _f(p):
 
 @glyph('G', 0.92)
 def _g(p):
-    p.path((p.R, p.T), (p.L, p.T), (p.L, p.B), (p.R, p.B), (p.R, p.M), (p.C + 0.05 * p.W, p.M), radii={4: 0})
+    p.path((p.R, p.T), (p.L, p.T), (p.L, p.B), (p.R, p.B), (p.R, p.M), (p.C + 0.05 * p.W, p.M), maybe_radii={4: 0})
 
 
 @glyph('H', 0.92)
@@ -119,7 +119,7 @@ def _o(p):
 
 @glyph('P', 0.88)
 def _p(p):
-    p.path((p.L, p.B), (p.L, p.T), (p.R, p.T), (p.R, p.M), (p.L, p.M), r=0, radii={2: p.bowl, 3: p.bowl})
+    p.path((p.L, p.B), (p.L, p.T), (p.R, p.T), (p.R, p.M), (p.L, p.M), maybe_r=0, maybe_radii={2: p.bowl, 3: p.bowl})
 
 
 @glyph('Q', 0.95)
@@ -130,7 +130,7 @@ def _q(p):
 
 @glyph('R', 0.90)
 def _r(p):
-    p.path((p.L, p.B), (p.L, p.T), (p.R, p.T), (p.R, p.M), (p.L, p.M), r=0, radii={2: p.bowl, 3: p.bowl})
+    p.path((p.L, p.B), (p.L, p.T), (p.R, p.T), (p.R, p.M), (p.L, p.M), maybe_r=0, maybe_radii={2: p.bowl, 3: p.bowl})
     p.line((p.C - 0.05 * p.W, p.M), (p.R + 0.30 * p.w, -p.w), ends='butt')
 
 
@@ -214,18 +214,18 @@ def _4(p):
 
 @glyph('5', FIGURE)
 def _5(p):
-    p.path((p.R, p.T), (p.L, p.T), (p.L, p.M), (p.R, p.M), (p.R, p.B), (p.L, p.B), r=0,
-           radii={3: p.bowl, 4: p.bowl})
+    p.path((p.R, p.T), (p.L, p.T), (p.L, p.M), (p.R, p.M), (p.R, p.B), (p.L, p.B), maybe_r=0,
+           maybe_radii={3: p.bowl, 4: p.bowl})
 
 
 @glyph('6', FIGURE)
 def _6(p):
-    p.path((p.R, p.T), (p.L, p.T), (p.L, p.B), (p.R, p.B), (p.R, p.M), (p.L, p.M), radii={4: 0})
+    p.path((p.R, p.T), (p.L, p.T), (p.L, p.B), (p.R, p.B), (p.R, p.M), (p.L, p.M), maybe_radii={4: 0})
 
 
 @glyph('7', FIGURE)
 def _7(p):
-    p.path((p.L, p.T), (p.R, p.T), (p.R, p.B), radii={1: p.bowl * 0.6})
+    p.path((p.L, p.T), (p.R, p.T), (p.R, p.B), maybe_radii={1: p.bowl * 0.6})
 
 
 @glyph('8', FIGURE)
@@ -236,7 +236,7 @@ def _8(p):
 
 @glyph('9', FIGURE)
 def _9(p):
-    p.path((p.R, p.M), (p.L, p.M), (p.L, p.T), (p.R, p.T), (p.R, p.B), (p.L, p.B), radii={0: 0})
+    p.path((p.R, p.M), (p.L, p.M), (p.L, p.T), (p.R, p.T), (p.R, p.B), (p.L, p.B), maybe_radii={0: 0})
 
 
 # --- Punctuation and symbols --------------------------------------------------
@@ -270,7 +270,7 @@ def _hash(p):
         p.line((p.L, y), (p.R, y))
 
 
-@glyph('$', 0.88, band=(-0.12, 1.12))
+@glyph('$', 0.88, maybe_band=(-0.12, 1.12))
 def _dollar(p):
     p.path((p.R, p.T), (p.L, p.T), (p.L, p.M), (p.R, p.M), (p.R, p.B), (p.L, p.B))
     p.line((p.C, -0.12 * p.H), (p.C, 1.12 * p.H), ends='butt')
@@ -279,30 +279,30 @@ def _dollar(p):
 @glyph('%', 0.95)
 def _percent(p):
     s = 0.30 * p.W
-    p.path((p.L, p.T - s), (p.L, p.T), (p.L + s, p.T), (p.L + s, p.T - s), r=0, closed=True)
-    p.path((p.R - s, p.B), (p.R - s, p.B + s), (p.R, p.B + s), (p.R, p.B), r=0, closed=True)
+    p.path((p.L, p.T - s), (p.L, p.T), (p.L + s, p.T), (p.L + s, p.T - s), maybe_r=0, closed=True)
+    p.path((p.R - s, p.B), (p.R - s, p.B + s), (p.R, p.B + s), (p.R, p.B), maybe_r=0, closed=True)
     p.line((p.R + 0.2 * p.w, p.H + p.w), (p.L - 0.2 * p.w, -p.w), ends='butt')
 
 
 @glyph('&', 0.95)
 def _amp(p):
     xm = p.C + 0.08 * p.W
-    p.path((xm, p.M), (p.L + 0.10 * p.W, p.M), (p.L + 0.10 * p.W, p.T), (xm, p.T), r=0, radii={1: 0, 2: p.bowl * 0.6, 3: p.bowl * 0.6},
+    p.path((xm, p.M), (p.L + 0.10 * p.W, p.M), (p.L + 0.10 * p.W, p.T), (xm, p.T), maybe_r=0, maybe_radii={1: 0, 2: p.bowl * 0.6, 3: p.bowl * 0.6},
            closed=True)
-    p.path((xm, p.M), (p.L, p.M), (p.L, p.B), (p.R, p.B), (p.R, 0.48 * p.H), r=0, radii={2: p.bowl})
+    p.path((xm, p.M), (p.L, p.M), (p.L, p.B), (p.R, p.B), (p.R, 0.48 * p.H), maybe_r=0, maybe_radii={2: p.bowl})
     p.line((p.R - 0.20 * p.W, 0.48 * p.H), (p.R, 0.48 * p.H))
 
 
-@glyph('(', 0.42, band=TALL)
+@glyph('(', 0.42, maybe_band=TALL)
 def _lparen(p):
     top, bottom = 1.16 * p.H - p.w / 2, -0.16 * p.H + p.w / 2
-    p.path((p.R, top), (p.L, top), (p.L, bottom), (p.R, bottom), r=p.bowl * 1.3)
+    p.path((p.R, top), (p.L, top), (p.L, bottom), (p.R, bottom), maybe_r=p.bowl * 1.3)
 
 
 mirrored(')', '(')
 
 
-@glyph('[', 0.42, band=TALL)
+@glyph('[', 0.42, maybe_band=TALL)
 def _lbracket(p):
     top, bottom = 1.16 * p.H - p.w / 2, -0.16 * p.H + p.w / 2
     p.line((p.R, top), (p.L, top), (p.L, bottom), (p.R, bottom))
@@ -311,12 +311,12 @@ def _lbracket(p):
 mirrored(']', '[')
 
 
-@glyph('{', 0.52, band=TALL)
+@glyph('{', 0.52, maybe_band=TALL)
 def _lbrace(p):
     top, bottom = 1.16 * p.H - p.w / 2, -0.16 * p.H + p.w / 2
     x = p.C + 0.08 * p.W
-    p.path((p.R, top), (x, top), (x, p.M), (p.L, p.M), r=0, radii={1: p.bowl * 0.8})
-    p.path((p.L, p.M), (x, p.M), (x, bottom), (p.R, bottom), r=0, radii={2: p.bowl * 0.8})
+    p.path((p.R, top), (x, top), (x, p.M), (p.L, p.M), maybe_r=0, maybe_radii={1: p.bowl * 0.8})
+    p.path((p.L, p.M), (x, p.M), (x, bottom), (p.R, bottom), maybe_r=0, maybe_radii={2: p.bowl * 0.8})
 
 
 mirrored('}', '{')
@@ -337,7 +337,7 @@ def _plus(p):
     p.line((p.C, p.M - half), (p.C, p.M + half))
 
 
-@glyph(',', stem_width(), band=LOW)
+@glyph(',', stem_width(), maybe_band=LOW)
 def _comma(p):
     p.line((p.C, p.w), (p.C, -0.16 * p.H))
 
@@ -366,7 +366,7 @@ def _colon(p):
     p.dot(p.C, 0.56 * p.H)
 
 
-@glyph(';', stem_width(), band=LOW)
+@glyph(';', stem_width(), maybe_band=LOW)
 def _semicolon(p):
     p.line((p.C, p.w), (p.C, -0.16 * p.H))
     p.dot(p.C, 0.56 * p.H)
@@ -389,7 +389,7 @@ def _equals(p):
 @glyph('?', 0.82)
 def _question(p):
     y = 0.56 * p.H
-    p.path((p.L, p.T), (p.R, p.T), (p.R, y), (p.C, y), (p.C, 0.32 * p.H), radii={3: 0})
+    p.path((p.L, p.T), (p.R, p.T), (p.R, y), (p.C, y), (p.C, 0.32 * p.H), maybe_radii={3: 0})
     p.dot(p.C, p.w / 2)
 
 
@@ -398,7 +398,7 @@ def _at(p):
     y0, y1 = 0.30 * p.H, 0.66 * p.H
     x0 = p.C - 0.06 * p.W
     p.path((p.R, p.B), (p.L, p.B), (p.L, p.T), (p.R, p.T), (p.R, y0), (x0, y0), (x0, y1), (p.R, y1),
-           radii={4: 0, 5: p.bowl * 0.5, 6: p.bowl * 0.5})
+           maybe_radii={4: 0, 5: p.bowl * 0.5, 6: p.bowl * 0.5})
 
 
 @glyph('^', 0.70)
@@ -406,7 +406,7 @@ def _caret(p):
     p.line((p.L, 0.50 * p.H), (p.C, p.T + 0.15 * p.w), (p.R, 0.50 * p.H))
 
 
-@glyph('_', 0.70, band=LOW)
+@glyph('_', 0.70, maybe_band=LOW)
 def _underscore(p):
     y = -0.22 * p.H + p.w / 2
     p.line((p.L, y), (p.R, y))
@@ -417,7 +417,7 @@ def _grave(p):
     p.line((p.L - 0.2 * p.w, p.H + 0.2 * p.w), (p.R, 0.74 * p.H), ends='butt')
 
 
-@glyph('|', stem_width(), band=TALL)
+@glyph('|', stem_width(), maybe_band=TALL)
 def _bar(p):
     p.line((p.C, -0.16 * p.H), (p.C, 1.16 * p.H), ends='butt')
 
@@ -425,7 +425,7 @@ def _bar(p):
 @glyph('~', 0.82)
 def _tilde(p):
     lo, hi = p.M - 0.10 * p.H, p.M + 0.10 * p.H
-    p.path((p.L, lo), (p.L, hi), (p.C, hi), (p.C, lo), (p.R, lo), (p.R, hi), r=p.bowl * 0.5)
+    p.path((p.L, lo), (p.L, hi), (p.C, hi), (p.C, lo), (p.R, lo), (p.R, hi), maybe_r=p.bowl * 0.5)
 
 
 PRINTABLE = [chr(c) for c in range(0x21, 0x7F)]

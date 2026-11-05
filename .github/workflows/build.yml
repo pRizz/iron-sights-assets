@@ -32,20 +32,13 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Install build tools
+        run: python -m pip install -r requirements.txt
       - name: Package dist/ with checksums
-        run: |
-          set -euo pipefail
-          mkdir -p release stage
-          for font in dist/*/; do
-            name=$(basename "$font")
-            mkdir -p "stage/$name"
-            cp "$font"* "stage/$name/"
-            cp LICENSE "stage/$name/LICENSE"
-            tar --sort=name --mtime='2026-01-01 00:00:00Z' --owner=0 --group=0 --numeric-owner \
-              -czf "release/${name}-${GITHUB_REF_NAME}.tar.gz" -C stage "$name"
-          done
-          cp LICENSE release/LICENSE
-          (cd release && sha256sum * > SHA256SUMS)
+        run: python -m tools.package_release "$GITHUB_REF_NAME"
       - name: Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
