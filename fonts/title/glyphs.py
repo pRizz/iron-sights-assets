@@ -264,7 +264,8 @@ def _8(p):
 @glyph('9', FIGURE)
 def _9(p):
     tail = p.L + 0.35 * (p.R - p.L)  # a short tail along the bottom
-    p.path((p.R, p.M), (p.L, p.M), (p.L, p.T), (p.R, p.T), (p.R, p.B), (tail, p.B), maybe_radii={0: 0})
+    y = 0.42 * p.H  # the loop's bar sits below the middle, for a bigger loop
+    p.path((p.R, y), (p.L, y), (p.L, p.T), (p.R, p.T), (p.R, p.B), (tail, p.B), maybe_radii={0: 0})
 
 
 # --- Punctuation and symbols --------------------------------------------------
