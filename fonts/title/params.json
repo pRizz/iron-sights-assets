@@ -1,10 +1,10 @@
 {
   "family": "Iron Sights Title",
   "postscriptName": "IronSightsTitle-Regular",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "unitsPerEm": 1000,
   "capHeight": 700,
-  "smallcapHeight": 530,
+  "smallcapHeight": 595,
   "ascender": 860,
   "descender": -200,
   "weight": 104,
