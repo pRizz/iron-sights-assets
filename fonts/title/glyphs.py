@@ -38,7 +38,8 @@ def _x_at(p0, p1, y):
     return x0 + (x1 - x0) * (y - y0) / (y1 - y0)
 
 
-HOOK = 0.17  # length of a terminal hook, as a fraction of H
+HOOK = 0.17        # length of the question mark's top hook, as a fraction of H
+SHORT_HOOK = 0.10  # terminal hooks on C, S, 2, 3 and 7
 
 
 @glyph('A', 0.92)
@@ -60,7 +61,7 @@ def _b(p):
 
 @glyph('C', 0.88)
 def _c(p):
-    hook = HOOK * p.H
+    hook = SHORT_HOOK * p.H
     p.path((p.R, p.T - hook), (p.R, p.T), (p.L, p.T), (p.L, p.B), (p.R, p.B), (p.R, p.B + hook),
            maybe_radii={1: p.bowl * 0.6, 4: p.bowl * 0.6})
 
@@ -152,7 +153,7 @@ def _r(p):
 
 @glyph('S', 0.88)
 def _s(p):
-    hook = HOOK * p.H
+    hook = SHORT_HOOK * p.H
     p.path((p.R, p.T - hook), (p.R, p.T), (p.L, p.T), (p.L, p.M), (p.R, p.M), (p.R, p.B), (p.L, p.B),
            (p.L, p.B + hook), maybe_radii={1: p.bowl * 0.6, 6: p.bowl * 0.6})
 
@@ -216,14 +217,14 @@ def _1(p):
 
 @glyph('2', FIGURE)
 def _2(p):
-    hook = HOOK * p.H
+    hook = SHORT_HOOK * p.H
     p.path((p.L, p.T - hook), (p.L, p.T), (p.R, p.T), (p.R, p.M), (p.L, p.M), (p.L, p.B), (p.R, p.B),
            (p.R, p.B + hook), maybe_radii={1: p.bowl * 0.6, 6: p.bowl * 0.6})
 
 
 @glyph('3', FIGURE)
 def _3(p):
-    hook = HOOK * p.H
+    hook = SHORT_HOOK * p.H
     p.path((p.L, p.T - hook), (p.L, p.T), (p.R, p.T), (p.R, p.B), (p.L, p.B), (p.L, p.B + hook),
            maybe_radii={1: p.bowl * 0.6, 4: p.bowl * 0.6})
     p.line((p.L + 0.22 * p.W, p.M), (p.R, p.M))
@@ -251,7 +252,7 @@ def _6(p):
 
 @glyph('7', FIGURE)
 def _7(p):
-    p.line((p.L, p.T - HOOK * p.H), (p.L, p.T), (p.R, p.T), (p.C - 0.12 * p.W, -p.w))
+    p.line((p.L, p.T - SHORT_HOOK * p.H), (p.L, p.T), (p.R, p.T), (p.C - 0.12 * p.W, -p.w))
 
 
 @glyph('8', FIGURE)
@@ -318,11 +319,12 @@ def _percent(p):
 @glyph('&', 0.95)
 def _amp(p):
     # A small loop over a larger bowl whose bottom curves up and out through
-    # the glyph to the right.
+    # the glyph to the right, and a leg from the loop down to the right.
     xt = p.C + 0.10 * p.W
     p.path((p.L + 0.12 * p.W, p.M), (p.L + 0.12 * p.W, p.T), (xt, p.T), (xt, p.M), maybe_r=p.bowl * 0.6, closed=True)
     p.path((p.L + 0.12 * p.W, p.M), (p.L, p.M), (p.L, p.B), (p.C - 0.05 * p.W, p.B), (p.R + 0.3 * p.w, 0.66 * p.H),
            maybe_radii={1: p.bowl * 0.6, 2: p.bowl, 3: p.bowl * 1.6})
+    p.line((xt - 0.3 * p.w, p.M + 0.3 * p.w), (p.R + 0.3 * p.w, -p.w), ends='butt')
 
 
 @glyph('(', 0.42, maybe_band=TALL)
