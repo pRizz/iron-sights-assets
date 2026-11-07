@@ -130,14 +130,15 @@ def soften(polygons, convex=0.0, concave=0.0):
     return polygons
 
 
-def finish(polygons):
+def finish(polygons, clean=0.5):
     """Clipper polygons to clean font-unit contours: outers counter-clockwise,
     holes clockwise (y up), duplicate and collinear points removed, in a
-    stable order."""
+    stable order. clean is how far (font units) a point may sit off the line
+    through its neighbours and still be dropped."""
     contours = []
     for poly in polygons:
         pts = _from_clipper(poly)
-        pts = pyclipper.CleanPolygon(pts, 0.5)
+        pts = pyclipper.CleanPolygon(pts, clean)
         deduped = []
         for p in pts:
             if not deduped or deduped[-1] != tuple(p):
@@ -154,6 +155,48 @@ def finish(polygons):
         result.append(_canonical_start(c))
     result.sort(key=lambda c: (min(p[1] for p in c), min(p[0] for p in c), len(c)))
     return result
+
+
+def simplify(polygons, tolerance):
+    """Clipper polygons with points dropped while every dropped point stays
+    within tolerance (font units) of the kept outline (Ramer-Douglas-Peucker),
+    so dense curves keep short, smooth facets."""
+    limit = tolerance * SCALE
+    out = []
+    for poly in polygons:
+        pts = [tuple(p) for p in poly]
+        if len(pts) < 4:
+            out.append(pts)
+            continue
+        far = max(range(len(pts)), key=lambda i: (pts[i][0] - pts[0][0]) ** 2 + (pts[i][1] - pts[0][1]) ** 2)
+        first = _rdp(pts[:far + 1], limit)
+        second = _rdp(pts[far:] + [pts[0]], limit)
+        out.append(first[:-1] + second[:-1])
+    return out
+
+
+def _rdp(points, limit):
+    keep = [False] * len(points)
+    keep[0] = keep[-1] = True
+    stack = [(0, len(points) - 1)]
+    while stack:
+        a, b = stack.pop()
+        (ax, ay), (bx, by) = points[a], points[b]
+        dx, dy = bx - ax, by - ay
+        length = math.sqrt(dx * dx + dy * dy)
+        worst, index = -1.0, -1
+        for i in range(a + 1, b):
+            px, py = points[i]
+            if length == 0:
+                d = math.sqrt((px - ax) ** 2 + (py - ay) ** 2)
+            else:
+                d = abs(dx * (py - ay) - dy * (px - ax)) / length
+            if d > worst:
+                worst, index = d, i
+        if index >= 0 and worst > limit:
+            keep[index] = True
+            stack += [(a, index), (index, b)]
+    return [p for p, k in zip(points, keep) if k]
 
 
 def _canonical_start(contour):

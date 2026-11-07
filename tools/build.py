@@ -22,7 +22,7 @@ from tools import geometry, msdf
 from tools.glyphpen import Pen
 
 ROOT = Path(__file__).resolve().parent.parent
-FONTS = ['title']
+FONTS = ['title', 'body']
 COPYRIGHT = 'Copyright (c) 2026 Peter Ryszkiewicz and Iron Sights assets contributors'
 LICENSE_URL = 'https://github.com/pRizz/iron-sights-assets/blob/main/LICENSE'
 # Fixed head timestamps (seconds since 1904-01-01) keep the TTF reproducible.
@@ -49,7 +49,11 @@ def load_definitions(name):
 
 
 def draw_glyph(defs, params, ch):
-    """(contours, advance) for one character, in font units."""
+    """(contours, advance) for one character, in font units. A font whose
+    definitions build their own glyphs (the drawn body font) provides
+    draw_glyph; the title font's skeletons are stroked here."""
+    if hasattr(defs, 'draw_glyph'):
+        return defs.draw_glyph(params, ch)
     small = ch in defs.LOWERCASE
     width_spec, maybe_band, mirror, draw = defs.GLYPHS[ch.upper() if small else ch]
     height = params['smallcapHeight'] if small else params['capHeight']
@@ -111,11 +115,12 @@ def write_ttf(params, glyphs, path):
     fb.setupGlyf(tables)
     fb.setupHorizontalMetrics(metrics)
     fb.setupHorizontalHeader(ascent=params['ascender'], descent=params['descender'])
+    style = params.get('style', 'Regular')
     fb.setupNameTable({
         'familyName': params['family'],
-        'styleName': 'Regular',
+        'styleName': style,
         'uniqueFontIdentifier': f"{params['postscriptName']};{params['version']}",
-        'fullName': f"{params['family']} Regular",
+        'fullName': f"{params['family']} {style}",
         'psName': params['postscriptName'],
         'version': f"Version {params['version']}",
         'copyright': COPYRIGHT,
@@ -124,7 +129,7 @@ def write_ttf(params, glyphs, path):
     })
     fb.setupOS2(sTypoAscender=params['ascender'], sTypoDescender=params['descender'], sTypoLineGap=0,
                 usWinAscent=params['ascender'], usWinDescent=-params['descender'],
-                sCapHeight=cap, sxHeight=params['smallcapHeight'], fsType=0, achVendID='NONE')
+                sCapHeight=cap, sxHeight=params.get('xHeight', params.get('smallcapHeight')), fsType=0, achVendID='NONE')
     fb.setupPost()
     fb.font['head'].created = TIMESTAMP
     fb.font['head'].modified = TIMESTAMP
@@ -170,7 +175,7 @@ def write_metrics(params, entries, image, path):
         'license': 'MIT',
         'unitsPerEm': params['unitsPerEm'],
         'capHeight': params['capHeight'],
-        'smallcapHeight': params['smallcapHeight'],
+        **{key: params[key] for key in ('smallcapHeight', 'xHeight') if key in params},
         'ascender': params['ascender'],
         'descender': params['descender'],
         'space': params['space'],
@@ -245,7 +250,8 @@ def build_font(name, out_dir):
     image, entries = build_atlas(params, glyphs)
     Image.fromarray(image, 'RGBA').save(out_dir / 'atlas.png', optimize=False, compress_level=9)
     write_metrics(params, entries, image, out_dir / 'metrics.json')
-    Image.fromarray(render_text(image, entries, params, SPECIMEN, 56), 'L').save(
+    specimen = params.get('specimen', {'lines': SPECIMEN, 'capPx': 56})
+    Image.fromarray(render_text(image, entries, params, specimen['lines'], specimen['capPx']), 'L').save(
         out_dir / 'specimen.png', optimize=False, compress_level=9)
     return glyphs, image, entries
 

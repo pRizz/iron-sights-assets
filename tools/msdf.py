@@ -20,6 +20,9 @@ CYAN, MAGENTA, YELLOW, WHITE = GREEN | BLUE, RED | BLUE, RED | GREEN, RED | GREE
 CYCLE = (CYAN, MAGENTA, YELLOW)
 # A turn sharper than this (radians) is a corner; arc facets are smaller.
 CORNER_TURN = math.radians(25)
+# Texels further than this (pixels) from the outline take the true distance in
+# every channel (see generate()).
+CORRECT_BEYOND = 1.5
 
 
 def _edges(contour):
@@ -128,10 +131,17 @@ def generate(contours, width, height, origin, scale, px_range):
                 best[c] = (np.where(take, key, bkey), np.where(take, dist, bdist), np.where(take, signed, bsigned))
 
     inside = _winding(px, py, contours) != 0
+    signed_true = np.where(inside, true_d, -true_d) * scale
     out = np.zeros((height, width, 4), dtype=np.uint8)
     for i, c in enumerate((RED, GREEN, BLUE)):
-        out[..., i] = _encode(best[c][2] * scale, px_range)
-    out[..., 3] = _encode(np.where(inside, true_d, -true_d) * scale, px_range)
+        # Error correction: only texels near an edge place it and keep its
+        # corners sharp. Further away, extended edge lines in two channels
+        # can agree on a false near-edge median (a pocket such as the foot of
+        # an n's counter), which small text, drawn over a narrow coverage
+        # range, shows as a faint dot; there the true distance is used.
+        far = np.abs(signed_true) > CORRECT_BEYOND
+        out[..., i] = _encode(np.where(far, signed_true, best[c][2] * scale), px_range)
+    out[..., 3] = _encode(signed_true, px_range)
     return out
 
 

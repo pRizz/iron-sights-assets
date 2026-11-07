@@ -1,0 +1,41 @@
+{
+  "family": "Iron Sights Body",
+  "style": "Bold",
+  "postscriptName": "IronSightsBody-Bold",
+  "version": "0.4.0",
+  "unitsPerEm": 1000,
+  "capHeight": 700,
+  "xHeight": 516,
+  "ascender": 900,
+  "descender": -240,
+  "glyphAscender": 730,
+  "glyphDescender": -200,
+  "overshoot": 12,
+  "upper": {
+    "thick": 96,
+    "thin": 80
+  },
+  "lower": {
+    "thick": 92,
+    "thin": 78
+  },
+  "condense": 0.92,
+  "tension": 0.6,
+  "space": 250,
+  "atlas": {
+    "pxPerEm": 96,
+    "pxRange": 6,
+    "columns": 16
+  },
+  "specimen": {
+    "capPx": 40,
+    "lines": [
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      "abcdefghijklmnopqrstuvwxyz",
+      "0123456789 !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
+      "Mission briefing: reach the control",
+      "room before the guards change shift.",
+      "Agent status 04:30 - objective (b) 87%"
+    ]
+  }
+}
